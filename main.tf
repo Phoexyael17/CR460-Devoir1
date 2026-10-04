@@ -24,6 +24,6 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "gr-ressource--cr460-devoir1"
+  name     = "gr-ressource-cr460-devoir1"
   location = "eastus"
 }
