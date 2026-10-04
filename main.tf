@@ -92,3 +92,27 @@ resource "azurerm_linux_virtual_machine" "vm" {
     version   = "latest"
   }
 }
+
+# Q10 - Azure Docker Container
+resource "azurerm_container_group" "docker_container" {
+  name                = "docker-cr460-devoir1"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  os_type         = "Linux"
+  ip_address_type = "Public"
+  restart_policy  = "Always"
+  sku             = "Standard"
+
+  container {
+    name   = "nginx"
+    image  = "nginx:alpine"
+    cpu    = 1
+    memory = 1
+
+    ports {
+      port     = 80
+      protocol = "TCP"
+    }
+  }
+}
