@@ -23,7 +23,18 @@ provider "azurerm" {
   tenant_id       = var.tenant_id
 }
 
+# Q7
+
 resource "azurerm_resource_group" "rg" {
   name     = "gr-ressource-cr460-devoir1"
   location = "eastus"
+}
+
+# Q8
+
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet-cr460-devoir1"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 }
