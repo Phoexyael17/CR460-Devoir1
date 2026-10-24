@@ -89,3 +89,10 @@ variable "q12_secret_value" {
   description = "Valeur du secret pour la question 12"
   sensitive   = true
 }
+
+# Q12 - Affichage du Secret Key Vault
+
+variable "key_vault_user_object_id" {
+  type        = string
+  description = "Object ID de l'utilisateur Azure autorise a consulter les secrets"
+}

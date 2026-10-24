@@ -146,6 +146,16 @@ resource "azurerm_key_vault" "cr460_kv" {
       "Delete"
     ]
   }
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = var.key_vault_user_object_id
+
+    secret_permissions = [
+      "Get",
+      "List"
+    ]
+  }
 }
 
 # Q12 - Secret stocke dans Azure Key Vault
