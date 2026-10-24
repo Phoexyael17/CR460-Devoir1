@@ -115,3 +115,60 @@ resource "azurerm_container_group" "docker_container" {
     }
   }
 }
+
+# Q12 - Identite utilisee par Terraform
+data "azurerm_client_config" "current" {}
+
+# Q12 - Azure Key Vault
+resource "azurerm_key_vault" "cr460_kv" {
+  name                = var.key_vault_name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  sku_name  = "standard"
+
+  rbac_authorization_enabled = false
+
+  soft_delete_retention_days = 7
+  purge_protection_enabled   = false
+
+  public_network_access_enabled = true
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    secret_permissions = [
+      "Get",
+      "List",
+      "Set",
+      "Delete"
+    ]
+  }
+}
+
+# Q12 - Secret stocke dans Azure Key Vault
+resource "azurerm_key_vault_secret" "q12_secret" {
+  name         = var.key_vault_secret_name
+  value        = var.q12_secret_value
+  key_vault_id = azurerm_key_vault.cr460_kv.id
+}
+
+# Q12 - Referencement du secret depuis Azure Key Vault
+data "azurerm_key_vault_secret" "q12_secret_reference" {
+  name         = azurerm_key_vault_secret.q12_secret.name
+  key_vault_id = azurerm_key_vault.cr460_kv.id
+
+  depends_on = [
+    azurerm_key_vault_secret.q12_secret
+  ]
+}
+
+output "key_vault_name" {
+  value = azurerm_key_vault.cr460_kv.name
+}
+
+output "key_vault_secret_reference" {
+  value = data.azurerm_key_vault_secret.q12_secret_reference.versionless_id
+}

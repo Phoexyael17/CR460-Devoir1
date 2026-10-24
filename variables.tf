@@ -69,3 +69,23 @@ variable "container_group_name" {
   description = "Nom du groupe de conteneurs Azure"
   default     = "docker-cr460-devoir1"
 }
+
+# Q12 - Azure Key Vault
+
+variable "key_vault_name" {
+  type        = string
+  description = "Nom du Azure Key Vault"
+  default     = "kv-cr460-rubeni-2026"
+}
+
+variable "key_vault_secret_name" {
+  type        = string
+  description = "Nom du secret Azure Key Vault"
+  default     = "cr460-demo-secret"
+}
+
+variable "q12_secret_value" {
+  type        = string
+  description = "Valeur du secret pour la question 12"
+  sensitive   = true
+}
