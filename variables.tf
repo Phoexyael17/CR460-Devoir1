@@ -92,6 +92,7 @@ variable "q12_secret_value" {
 
 # Q12 - Affichage du Secret Key Vault
 
+
 variable "key_vault_user_object_id" {
   type        = string
   description = "Object ID de l'utilisateur Azure autorise a consulter les secrets"
