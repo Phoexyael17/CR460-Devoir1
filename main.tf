@@ -104,8 +104,8 @@ resource "azurerm_container_group" "docker_container" {
   sku             = "Standard"
 
   container {
-    name   = "nginx"
-    image  = "nginx:alpine"
+    name   = "aci-helloworld"
+    image  = "mcr.microsoft.com/azuredocs/aci-helloworld"
     cpu    = 1
     memory = 1
 
