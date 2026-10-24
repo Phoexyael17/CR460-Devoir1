@@ -23,34 +23,33 @@ provider "azurerm" {
   tenant_id       = var.tenant_id
 }
 
-# Q7
-
+# Q7 - Modifié
 resource "azurerm_resource_group" "rg" {
-  name     = "gr-ressource-cr460-devoir1"
-  location = "eastus2"
+  name     = var.resource_group_name
+  location = var.location
 }
 
-# Q8
+# Q8 - Modifié
 
 resource "azurerm_virtual_network" "vnet" {
-  name                = "vnet-cr460-devoir1"
+  name                = var.vnet_name
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# Q8 - Subnet pour la VM
+# Q8 - Subnet pour la VM - Modifié
 resource "azurerm_subnet" "vm_subnet" {
-  name                 = "snet-vm-cr460-devoir1"
+  name                 = var.subnet_name
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-# Q8 - Interface réseau de la VM
+# Q8 - Interface réseau de la VM - Modifié
 resource "azurerm_network_interface" "vm_nic" {
-  name                = "nic-vm-cr460-devoir1"
-  location            = azurerm_resource_group.rg.location
+  name                = var.nic_name
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
@@ -60,12 +59,12 @@ resource "azurerm_network_interface" "vm_nic" {
   }
 }
 
-# Q9 - Machine virtuelle Linux
+# Q9 - Machine virtuelle Linux - Modifié
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "vm-cr460-devoir1"
+  name                = var.vm_name
   resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  size                = "Standard_B1s"
+  location            = var.location
+  size                = var.vm_size
 
   admin_username                  = "cr460admin"
   disable_password_authentication = true
@@ -93,10 +92,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
-# Q10 - Azure Docker Container
+# Q10 - Azure Docker Container - Modifié
 resource "azurerm_container_group" "docker_container" {
-  name                = "docker-cr460-devoir1"
-  location            = azurerm_resource_group.rg.location
+  name                = var.container_group_name
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
   os_type         = "Linux"
