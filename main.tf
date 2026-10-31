@@ -27,6 +27,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
+  tags     = local.common_tags
 }
 
 # Q8 - Modifié
@@ -36,6 +37,7 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/16"]
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
+  tags                = local.common_tags
 }
 
 # Q8 - Subnet pour la VM - Modifié
@@ -44,6 +46,7 @@ resource "azurerm_subnet" "vm_subnet" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
+
 }
 
 # Q8 - Interface réseau de la VM - Modifié
@@ -57,6 +60,7 @@ resource "azurerm_network_interface" "vm_nic" {
     subnet_id                     = azurerm_subnet.vm_subnet.id
     private_ip_address_allocation = "Dynamic"
   }
+  tags = local.common_tags
 }
 
 # Q9 - Machine virtuelle Linux - Modifié
@@ -90,6 +94,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "22_04-lts-gen2"
     version   = "latest"
   }
+  tags = local.common_tags
 }
 
 # Q10 - Azure Docker Container - Modifié
@@ -114,6 +119,7 @@ resource "azurerm_container_group" "docker_container" {
       protocol = "TCP"
     }
   }
+  tags = local.common_tags
 }
 
 # Q12 - Identite utilisee par Terraform
@@ -158,6 +164,7 @@ resource "azurerm_key_vault" "cr460_kv" {
       "List"
     ]
   }
+  tags = local.common_tags
 }
 
 # Q12 - Secret stocke dans Azure Key Vault
@@ -165,6 +172,7 @@ resource "azurerm_key_vault_secret" "q12_secret" {
   name         = var.key_vault_secret_name
   value        = var.q12_secret_value
   key_vault_id = azurerm_key_vault.cr460_kv.id
+  tags         = local.common_tags
 }
 
 # Q12 - Referencement du secret depuis Azure Key Vault
@@ -183,4 +191,14 @@ output "key_vault_name" {
 
 output "key_vault_secret_reference" {
   value = data.azurerm_key_vault_secret.q12_secret_reference.versionless_id
+}
+
+
+# Q13 - Tags de gestion des couts
+
+
+locals {
+  common_tags = {
+    Projet = "DevoirCR460"
+  }
 }
