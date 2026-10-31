@@ -143,7 +143,9 @@ resource "azurerm_key_vault" "cr460_kv" {
       "Get",
       "List",
       "Set",
-      "Delete"
+      "Delete",
+      "Recover",
+      "Purge"
     ]
   }
 
