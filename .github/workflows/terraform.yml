@@ -15,6 +15,8 @@ jobs:
   plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.plan.outputs.has_changes }}
 
     defaults:
       run:
@@ -72,14 +74,34 @@ jobs:
       # Q15 - Terraform Plan
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -input=false
+        id: plan
+        run: |
+          set +e
+          terraform plan -detailed-exitcode -out=tfplan -input=false
+          exitcode=$?
+          set -e
+
+          if [ "$exitcode" -eq 1 ]; then
+            echo "Terraform plan failed."
+            exit 1
+          elif [ "$exitcode" -eq 2 ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "Terraform detected changes."
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No Terraform changes detected."
+          fi
+
       - name: Upload Terraform Plan
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: |
+          github.ref == 'refs/heads/main' &&
+          github.event_name == 'push' &&
+          steps.plan.outputs.has_changes == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
           path: tfplan
-          retention-days: 1
+      
  
   # Q15 - APPROBATION MANUELLE + APPLY
 
@@ -104,10 +126,19 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       - name: Terraform Init
         run: terraform init
+      - name: No changes to apply
+        if: needs.plan.outputs.has_changes != 'true'
+        run: |
+          echo "Terraform Plan contains no infrastructure changes."
+          echo "Manual approval completed; Terraform Apply is not required."
+
       - name: Download Terraform Plan
+        if: needs.plan.outputs.has_changes == 'true'
         uses: actions/download-artifact@v4
         with:
           name: terraform-plan
           path: .
+
       - name: Terraform Apply
+        if: needs.plan.outputs.has_changes == 'true'
         run: terraform apply -input=false tfplan
