@@ -97,3 +97,13 @@ variable "key_vault_user_object_id" {
   type        = string
   description = "Object ID de l'utilisateur Azure autorise a consulter les secrets"
 }
+
+
+# Q14 - Azure Container Registry
+
+
+variable "acr_name" {
+  type        = string
+  description = "Nom du Azure Container Registry"
+  default     = "acrcr460rubeni"
+}
