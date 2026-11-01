@@ -81,7 +81,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
     username   = "cr460admin"
     public_key = var.ssh_public_key
   }
-
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
