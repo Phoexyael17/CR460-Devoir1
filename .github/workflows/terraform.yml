@@ -82,6 +82,28 @@ jobs:
     - name: Terraform Format
       run: terraform fmt -check
 
+    - name: Login to Azure Container Registry
+      run: |
+        echo "${{ secrets.ACR_PASSWORD }}" | docker login \
+          "${{ secrets.ACR_LOGIN_SERVER }}" \
+          --username "${{ secrets.ACR_USERNAME }}" \
+          --password-stdin
+
+    - name: Pull Docker image
+      run: |
+        docker pull mcr.microsoft.com/azuredocs/aci-helloworld
+
+    - name: Tag Docker image for ACR
+      run: |
+        docker tag \
+          mcr.microsoft.com/azuredocs/aci-helloworld \
+          "${{ secrets.ACR_LOGIN_SERVER }}/cr460-app:v1"
+
+    - name: Push Docker image to ACR
+      run: |
+        docker push \
+          "${{ secrets.ACR_LOGIN_SERVER }}/cr460-app:v1"  
+
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
@@ -94,3 +116,4 @@ jobs:
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
+

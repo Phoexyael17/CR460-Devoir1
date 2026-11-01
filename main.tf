@@ -102,6 +102,11 @@ resource "azurerm_container_group" "docker_container" {
   name                = var.container_group_name
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
+  image_registry_credential {
+  server   = azurerm_container_registry.acr.login_server
+  username = azurerm_container_registry.acr.admin_username
+  password = azurerm_container_registry.acr.admin_password
+}
 
   os_type         = "Linux"
   ip_address_type = "Public"
@@ -109,10 +114,10 @@ resource "azurerm_container_group" "docker_container" {
   sku             = "Standard"
 
   container {
-    name   = "aci-helloworld"
-    image  = "mcr.microsoft.com/azuredocs/aci-helloworld"
-    cpu    = 1
-    memory = 1
+  name   = "cr460-container"
+  image  = "${azurerm_container_registry.acr.login_server}/cr460-app:v1"
+  cpu    = 1
+  memory = 1
 
     ports {
       port     = 80
