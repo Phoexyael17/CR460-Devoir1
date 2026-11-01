@@ -207,6 +207,12 @@ locals {
   }
 }
 
+locals {
+  common_tags = {
+    Projet      = "DevoirCR4602"
+    Environment = "Production"
+  }
+}
 # Q14 - Azure Container Registry
 
 resource "azurerm_container_registry" "acr" {
