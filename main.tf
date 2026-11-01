@@ -203,13 +203,7 @@ output "key_vault_secret_reference" {
 
 locals {
   common_tags = {
-    Projet = "DevoirCR460"
-  }
-}
-
-locals {
-  common_tags = {
-    Projet      = "DevoirCR4602"
+    Projet      = "DevoirCR460"
     Environment = "Production"
   }
 }
