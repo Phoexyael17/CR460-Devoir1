@@ -115,7 +115,7 @@ resource "azurerm_container_group" "docker_container" {
 
   container {
     name   = "cr460-container"
-    image  = "${azurerm_container_registry.acr.login_server}/cr460-app:v1"
+    image  = "${azurerm_container_registry.acr.login_server}/cr460-container:v1"
     cpu    = 1
     memory = 1
 
